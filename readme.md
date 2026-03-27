@@ -44,3 +44,52 @@ Navigate to the folder `pdf-transformers` and run:
 
 ```bash
 go run main.go <folder_name> <pdf_file>
+ ```
+
+Example:
+
+```bash
+go run main.go RDC_BGD primer.pdf
+ ```
+
+## Building the Application
+
+To build the executable file:
+
+```bash
+go build -o pdf_transformers.exe main.go
+ ```
+
+ ## Running the EXE
+
+ From PowerShell (important ⚠️):
+
+ ```bash
+.\pdf_transformers.exe RDC_BGD primer.pdf
+ ```
+
+ ## Folder Structure Example
+
+ After running the program, your folder structure will look like this:
+
+ ```bash
+D:\go_workspace\pdf-transformers\
+├─ main.go
+├─ pdf_transformers.exe
+├─ RDC_BGD\
+│   ├─ primer.pdf
+│   └─ slike\
+│       ├─ primer_strana-1.png
+│       ├─ primer_strana-2.png
+│       ├─ primer_strana-3.png
+│       └─ primer.json
+ ```
+## Example JSON Output (primer.json)
+
+```bash
+[
+  "primer_strana-1.png",
+  "primer_strana-2.png",
+  "primer_strana-3.png"
+]
+ ```
