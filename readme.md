@@ -62,7 +62,7 @@ go build -o pdf_transformers.exe main.go
 
  ## Running the EXE
 
- From PowerShell (important ⚠️):
+ From PowerShell:
 
  ```bash
 .\pdf_transformers.exe RDC_BGD primer.pdf

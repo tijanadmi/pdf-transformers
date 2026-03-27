@@ -36,11 +36,38 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 func main() {
+	// Folder gde je exe, za log fajl
+	exePath, _ := os.Executable()
+	exeFolder := filepath.Dir(exePath)
+	logPath := filepath.Join(exeFolder, "pdf_transformers.log")
+
+	// Otvori log fajl (append mode)
+	logFile, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		fmt.Println("Greška pri otvaranju log fajla:", err)
+		return
+	}
+	defer logFile.Close()
+
+	// Funkcija za upis u log sa timestampom
+	log := func(msg string) {
+		timestamp := time.Now().Format("2006-01-02 15:04:05")
+		logFile.WriteString(fmt.Sprintf("[%s] %s\n", timestamp, msg))
+		fmt.Println(msg) // opcionalno: ispiši i na ekran
+	}
+
+	// Separator za novi run
+	log("===============================================")
+	log("POČINJE NOVI RUN PDF TRANSFORMERS")
+	log("===============================================")
+
 	if len(os.Args) < 3 {
-		fmt.Println("Nedostaju argumenti: <folder_ime> <pdf_ime>")
+		// fmt.Println("Nedostaju argumenti: <folder_ime> <pdf_ime>")
+		log("Nedostaju argumenti: <folder_ime> <pdf_ime>")
 		return
 	}
 
@@ -48,7 +75,7 @@ func main() {
 	pdfIme := os.Args[2]
 
 	// basePath := "D:\\go_workspace\\pdf-transformers"
-	basePath := "E:\\aplikacije\\tis\\ddn"
+	basePath := "E:\\aplikacije\\tis\\ddn\\docs"
 
 	// putanja do ulaznog PDF-a (folder korisnika + pdfIme)
 	inputPath := filepath.Join(basePath, folderIme, "scan", pdfIme)
@@ -65,6 +92,8 @@ func main() {
 	// prefix za PNG fajlove
 	outputPrefix := filepath.Join(outputFolder, pdfBaseName+"_strana")
 
+	log(fmt.Sprintf("Počinje konverzija PDF-a: %s", inputPath))
+
 	// Konverzija PDF u slike
 	cmd := exec.Command(
 		// "D:\\poppler\\Library\\bin\\pdftoppm.exe",
@@ -77,14 +106,19 @@ func main() {
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Println("Greška pri konverziji:", string(output))
+		// fmt.Println("Greška pri konverziji:", string(output))
+		log(fmt.Sprintf("Greška pri konverziji PDF-a: %v", err))
+		log(fmt.Sprintf("Detalji izlaza: %s", string(output)))
 		return
 	}
+
+	log("Konverzija PDF-a završena uspešno.")
 
 	// Generiši listu fajlova u output folderu
 	files, err := os.ReadDir(outputFolder)
 	if err != nil {
-		fmt.Println("Greška pri čitanju foldera:", err)
+		// fmt.Println("Greška pri čitanju foldera:", err)
+		log(fmt.Sprintf("Greška pri čitanju foldera %s: %v", outputFolder, err))
 		return
 	}
 
@@ -100,7 +134,8 @@ func main() {
 	jsonPath := filepath.Join(outputFolder, pdfBaseName+".json")
 	fJSON, err := os.Create(jsonPath)
 	if err != nil {
-		fmt.Println("Greška pri kreiranju JSON-a:", err)
+		// fmt.Println("Greška pri kreiranju JSON-a:", err)
+		log(fmt.Sprintf("Greška pri kreiranju JSON-a: %v", err))
 		return
 	}
 	defer fJSON.Close()
@@ -109,5 +144,7 @@ func main() {
 	enc.SetIndent("", "  ")
 	enc.Encode(slike)
 
-	fmt.Println("Konverzija uspešna! JSON fajl kreiran:", jsonPath)
+	log(fmt.Sprintf("JSON fajl kreiran: %s", jsonPath))
+	log(fmt.Sprintf("Broj generisanih PNG fajlova: %d", len(slike)))
+	log("=== Kraj procesa ===")
 }
