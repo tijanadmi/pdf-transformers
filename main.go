@@ -1,32 +1,3 @@
-// package main
-
-// import (
-// 	"fmt"
-// 	"os/exec"
-// )
-
-// func main() {
-// 	pdfPath := "primer.pdf"
-// 	outputPrefix := "slike/strana"
-
-// 	cmd := exec.Command(
-// 		"D:\\poppler\\Library\\bin\\pdftoppm.exe",
-// 		"-png",
-// 		"-r", "300",
-// 		pdfPath,
-// 		outputPrefix,
-// 	)
-
-// 	output, err := cmd.CombinedOutput()
-// 	if err != nil {
-// 		fmt.Println("Greška:", err)
-// 		fmt.Println("Detalji:", string(output))
-// 		return
-// 	}
-
-// 	fmt.Println("OK:", string(output))
-// }
-
 package main
 
 import (
@@ -97,7 +68,7 @@ func main() {
 	// Konverzija PDF u slike
 	cmd := exec.Command(
 		// "D:\\poppler\\Library\\bin\\pdftoppm.exe",
-		"E:\\aplikacije\\poppler\\Library\\bin\\pdftoppm.exe",
+		"E:\\aplikacije\\tis\\ddn\\docs\\poppler\\Library\\bin\\pdftoppm.exe",
 		"-png",
 		"-r", "300",
 		inputPath,
